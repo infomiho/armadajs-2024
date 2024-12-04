@@ -3,6 +3,7 @@ import {
   updateTask,
   deleteTasks,
   useQuery,
+  useAction,
   getTasks,
 } from "wasp/client/operations";
 
@@ -11,11 +12,43 @@ import { filterTodos, useFilters } from "./tasks/hooks";
 import { TodoInput } from "./tasks/TodoInput";
 import { TodoItem } from "./tasks/TodoItem";
 import { TodoFiltersComponent } from "./tasks/TodoFilters";
+import { Task } from "wasp/entities";
+import { AuthUser } from "wasp/auth";
 
-export const MainPage = () => {
+export const MainPage = ({ user }: { user: AuthUser }) => {
   const { data: tasks, isLoading, error } = useQuery(getTasks);
 
   const { filter, setFilter } = useFilters();
+
+  const updateTaskOptimistically = useAction(updateTask, {
+    optimisticUpdates: [
+      {
+        getQuerySpecifier: () => [getTasks],
+        updateQuery: (newTask, oldTasks: Task[] | undefined) => {
+          return oldTasks?.map((task) => {
+            if (task.id === newTask.id) {
+              return {
+                ...task,
+                ...newTask,
+              };
+            }
+            return task;
+          });
+        },
+      },
+    ],
+  });
+
+  const deleteTasksOptimistically = useAction(deleteTasks, {
+    optimisticUpdates: [
+      {
+        getQuerySpecifier: () => [getTasks],
+        updateQuery: (deletedIds, oldTasks: Task[] | undefined) => {
+          return oldTasks?.filter((task) => !deletedIds.includes(task.id));
+        },
+      },
+    ],
+  });
 
   if (isLoading) return "Loading...";
   if (error) return "Error: " + error;
@@ -34,12 +67,12 @@ export const MainPage = () => {
             key={task.id}
             task={task}
             onToggle={() => {
-              updateTask({
+              updateTaskOptimistically({
                 id: task.id,
                 isDone: !task.isDone,
               });
             }}
-            onDelete={() => deleteTasks([task.id])}
+            onDelete={() => deleteTasksOptimistically([task.id])}
           />
         ))}
         {filteredTasks.length === 0 && (
@@ -53,7 +86,7 @@ export const MainPage = () => {
         <TodoFiltersComponent
           currentFilter={filter}
           onFilterChange={setFilter}
-          onClearCompleted={() => deleteTasks(completed)}
+          onClearCompleted={() => deleteTasksOptimistically(completed)}
         />
       )}
     </div>
