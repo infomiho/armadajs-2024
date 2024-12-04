@@ -4,15 +4,21 @@ app armadajs2024 {
   },
   title: "armadajs-2024",
 
+
+
+
   auth: {
     userEntity: User,
     methods: {
       usernameAndPassword: {},
       gitHub: {},
-      google: {},
+      // google: {},
     },
     onAuthFailedRedirectTo: "/login",
   },
+
+
+
 
   client: {
     rootComponent: import { Layout } from "@src/Layout",

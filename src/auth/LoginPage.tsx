@@ -5,12 +5,7 @@ import { appearance } from "./appearance";
 import { useAuth } from "./useAuth";
 
 export function LoginPage() {
-  const { isLoading, isAuthenticated, navigateAlreadyAuthenticated } =
-    useAuth();
-
-  if (isLoading) {
-    return null;
-  }
+  const { isAuthenticated, navigateAlreadyAuthenticated } = useAuth();
 
   if (isAuthenticated) {
     return navigateAlreadyAuthenticated();
