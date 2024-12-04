@@ -31,11 +31,6 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    # REMOVE this whole block if your app is not in the `app` folder
-    defaults:
-      run:
-        working-directory: ./app
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -84,10 +79,8 @@ jobs:
       - name: (server) Build and push Docker image
         uses: docker/build-push-action@v6
         with:
-          # REMOVE the `app` bit from the path if your app is not in the `app` folder
-          context: ./app/.wasp/build
-          # REMOVE the `app` bit from the path if your app is not in the `app` folder
-          file: ./app/.wasp/build/Dockerfile
+          context: ./.wasp/build
+          file: ./.wasp/build/Dockerfile
           push: true
           tags: ${{ steps.meta-server.outputs.tags }}
           labels: ${{ steps.meta-server.outputs.labels }}
@@ -95,10 +88,8 @@ jobs:
       - name: (client) Build and push Docker image
         uses: docker/build-push-action@v6
         with:
-          # REMOVE the `app` bit from the path if your app is not in the `app` folde
-          context: ./app/.wasp/build/web-app
-          # REMOVE the `app` bit from the path if your app is not in the `app` folder
-          file: ./app/.wasp/build/web-app/Dockerfile
+          context: ./.wasp/build/web-app
+          file: ./.wasp/build/web-app/Dockerfile
           push: true
           tags: ${{ steps.meta-client.outputs.tags }}
           labels: ${{ steps.meta-client.outputs.labels }}
