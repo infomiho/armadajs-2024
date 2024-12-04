@@ -3,7 +3,7 @@ name: "Deploy"
 on:
   push:
     branches:
-      - "main"
+      - "master"
 
 # This will make sure that only one deployment is running at a time
 concurrency:
