@@ -1,8 +1,12 @@
 app armadajs2024 {
+
+
+
+
   wasp: {
     version: "^0.15.0"
   },
-  title: "armadajs-2024",
+  title: "ArmadaJS 2024",
 
 
 
@@ -12,7 +16,6 @@ app armadajs2024 {
     methods: {
       usernameAndPassword: {},
       gitHub: {},
-      // google: {},
     },
     onAuthFailedRedirectTo: "/login",
   },
