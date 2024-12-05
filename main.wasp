@@ -16,6 +16,7 @@ app armadajs2024 {
     methods: {
       usernameAndPassword: {},
       gitHub: {},
+      google: {}
     },
     onAuthFailedRedirectTo: "/login",
   },
